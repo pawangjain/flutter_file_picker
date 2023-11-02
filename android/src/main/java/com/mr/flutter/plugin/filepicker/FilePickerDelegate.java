@@ -137,8 +137,7 @@ public class FilePickerDelegate implements PluginRegistry.ActivityResultListener
                         } else if (data.getExtras() != null){
                             Bundle bundle = data.getExtras();
                             if (bundle.keySet().contains("selectedItems")) {
-                                ArrayList<Parcelable> fileUris = getSelectedItems(bundle);
-
+                                ArrayList<Parcelable> fileUris = bundle.getParcelableArrayList("selectedItems");
                                 int currentItem = 0;
                                 if (fileUris != null) {
                                     for (Parcelable fileUri : fileUris) {
@@ -210,15 +209,6 @@ public class FilePickerDelegate implements PluginRegistry.ActivityResultListener
     }
 
     @SuppressWarnings("deprecation")
-    private ArrayList<Parcelable> getSelectedItems(Bundle bundle){
-        if(Build.VERSION.SDK_INT >= 33){
-            return bundle.getParcelableArrayList("selectedItems", Parcelable.class);
-        }
-
-        return bundle.getParcelableArrayList("selectedItems");
-    }
-
-    @SuppressWarnings("deprecation")
     private void startFileExplorer() {
         final Intent intent;
 
@@ -272,7 +262,7 @@ public class FilePickerDelegate implements PluginRegistry.ActivityResultListener
         this.isMultipleSelection = isMultipleSelection;
         this.loadDataToMemory = withData;
         this.allowedExtensions = allowedExtensions;
-        // `READ_EXTERNAL_STORAGE` permission is not needed since SDK 33 (Android 13 or higher).
+	    // `READ_EXTERNAL_STORAGE` permission is not needed since SDK 33 (Android 13 or higher).
         // `READ_EXTERNAL_STORAGE` & `WRITE_EXTERNAL_STORAGE` are no longer meant to be used, but classified into granular types.
         // Reference: https://developer.android.com/about/versions/13/behavior-changes-13
         if (Build.VERSION.SDK_INT < 33) {
